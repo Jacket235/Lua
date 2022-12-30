@@ -43,7 +43,3 @@ hook.Add( "PlayerButtonUp", "shittingMyPants", function( _, button )
 	end
 	hook.Remove("EntityEmitSound", "mufflingSounds")
 end)
-
-/*
-- Make the sound quiet when in listen mode
-*/
