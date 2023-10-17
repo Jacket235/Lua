@@ -1,0 +1,38 @@
+- When an admin claims a case, it gets taller and adds multiple buttons for the admin to use on himself. got it
+- When offender leaves, close the popup (and make sure to reset players ability to make !report[s]). got it
+- Compatiblity with:
+SAM, got it
+ServerGuard, got it
+sAdmin, got it
+- Add chat cues for claiming, already claimed, closed claims. got it
+- Add sound when pop up appears, add sound when the description updates. got it
+- no player offense, doesnt reset report. got it
+- your report is finished displays twice, because offender is not valid when no player offense. got it
+
+
+
+
+
+Features:
+-Support for ULX, SAM, ServerGuard, sAdmin
+-Report Menu, select the player you'd like to report, or "no player offense" to get staff help with something else
+-A player can have only 1 report at a time.
+-Admins get a popup, that plays a sound, when there's a new report.
+-Players can give additional info about their report, by typing #(message).
+
+-Buttons to quickly execute the most important commands, on the victim or the offender
+
+*goto, - To teleport to the player 
+*bring, - To bring the player to your location
+*return, - To return the player to their last location
+*freeze, - To freeze the player, incase the victim or offender started attacking each other or others
+*mute, - To mute and gag the player, incase the victim or offender wouldn't let others speak
+
+-When an admin claims the case they get additional quick options for god and cloak
+-Only one admin can claim a single case.
+-When the victim or offender leaves, the popup closes.
+-When the admin that claimed the report, closes the popup, it closes for other admins too.
+-When a popup is claimed, it informs the player that their report is being taken care of.
+
+
+
