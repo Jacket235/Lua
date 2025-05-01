@@ -1,18 +1,15 @@
 if SERVER then
-
-	-- Download the font and gun icons
-	resource.AddFile("resource/fonts/DIN Next LT Arabic Medium.ttf")
-	resource.AddFile("materials/TloU2Icons/ar.png")
-	resource.AddFile("materials/TloU2Icons/crossbow.png")
-	resource.AddFile("materials/TloU2Icons/grenade.png")
-	resource.AddFile("materials/TloU2Icons/pistol.png")
-	resource.AddFile("materials/TloU2Icons/revolver.png")
-	resource.AddFile("materials/TloU2Icons/rpg.png")
-	resource.AddFile("materials/TloU2Icons/shotgun.png")
-	resource.AddFile("materials/TloU2Icons/submg.png")
 	-- Initalize the HUD
 	AddCSLuaFile("HUD/client/cl_tlouhud.lua")
-
+	resource.AddFile("materials/TLoU2_HUD/AR.png")
+	resource.AddFile("materials/TLoU2_HUD/Grenade.png")
+	resource.AddFile("materials/TLoU2_HUD/Pistol.png")
+	resource.AddFile("materials/TLoU2_HUD/Revolver.png")
+	resource.AddFile("materials/TLoU2_HUD/RPG.png")
+	resource.AddFile("materials/TLoU2_HUD/Shotgun.png")
+	resource.AddFile("materials/TLoU2_HUD/SMG.png")
+	resource.AddFile("materials/TLoU2_HUD/Unarmed.png")
+	resource.AddFile("resource/fonts/DINNextLTArabicMedium.ttf")
 else
 	include("HUD/client/cl_tlouhud.lua")
 end
