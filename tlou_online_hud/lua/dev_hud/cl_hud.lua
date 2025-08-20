@@ -67,7 +67,7 @@ local icons = {
 
 
 local plyStartHp, plyOldHp, plyNewHp, plySmoothHpLoss = 0, -1, -1, 0
-local plyHUDAlpha = 150
+local plyHUDAlpha = 1
 
 hook.Add("HUDPaint", "dev_hud", function()
 	// Player info
@@ -127,7 +127,7 @@ hook.Add("HUDPaint", "dev_hud", function()
 	else
 		drawBlurAt(startingPosInfoX - 2, startingPosInfoY - 2, infoBarW, infoBarH, 1, 1, false)
 		drawBlurAt(startingPosHealthX - 2, startingPosHealthY - 2, healthBarW * segments + (segments * segmentsGap) + segmentsGap, healthBarH + 4, 1, 1, false)
-		plyHUDAlpha = 150
+		plyHUDAlpha = 1
 	end
 
 	// Health segments
@@ -145,7 +145,7 @@ hook.Add("HUDPaint", "dev_hud", function()
 	local gapSegmentsX = 0
 
 	-- Health background box
-	surface.SetDrawColor(0, 0, 0, plyHUDAlpha)
+	surface.SetDrawColor(0, 0, 0, 150 * plyHUDAlpha)
 	surface.DrawRect(
 		startingPosHealthX - 2,
 		startingPosHealthY - 2,
@@ -180,7 +180,7 @@ hook.Add("HUDPaint", "dev_hud", function()
 	local startingPosHealthIconX = (scrw / 2) - (healthIconMatW / 2) - (math.floor(segments / 2) * healthBarW) - healthIconMatW - (30 * scale)
 	local startingPosHealthIconY = (scrh / 2 - (healthIconMatH / 2)) + (420 * scale)
 
-	surface.SetDrawColor(255, 255, 255, 255)
+	surface.SetDrawColor(255, 255, 255, 255 * plyHUDAlpha)
 	surface.SetMaterial(healthIconMat)
 	surface.DrawTexturedRect(startingPosHealthIconX, startingPosHealthIconY, healthIconMatW, healthIconMatH)
 
@@ -196,12 +196,12 @@ hook.Add("HUDPaint", "dev_hud", function()
 	surface.DrawRect(startingPosHealthX + gapSegmentsX + (healthBarW * fullSegments) + remainingSegmentWidth, startingPosHealthY, plySmoothHpLoss, healthBarH)
 
 	-- Weapons and ammo
-	surface.SetDrawColor(0, 0, 0, plyHUDAlpha)
+	surface.SetDrawColor(0, 0, 0, 150 * plyHUDAlpha)
 	surface.DrawRect(startingPosInfoX, startingPosInfoY, infoBarW, infoBarH)
 
-	surface.SetDrawColor(128, 128, 128, plyHUDAlpha)
+	surface.SetDrawColor(128, 128, 128, 150 * plyHUDAlpha)
 	surface.DrawRect(startingPosInfoX, startingPosInfoY, infoBarW * .6, 2)
-	surface.SetDrawColor(128, 128, 128, plyHUDAlpha)
+	surface.SetDrawColor(128, 128, 128, 150 * plyHUDAlpha)
 	surface.DrawRect(startingPosInfoX, startingPosInfoY + infoBarH, infoBarW, 2)
 
 	surface.SetFont("ammo")

@@ -1,18 +1,16 @@
 if SERVER then
 	AddCSLuaFile("dev_hud/cl_hud.lua")
 	resource.AddFile("materials/tlou_online_hud/missing.png")
+	resource.AddFile("materials/tlou_online_hud/small-health.png")
 
 	-- Weapons
 	resource.AddFile("materials/tlou_online_hud/beretta.png")
 	resource.AddFile("materials/tlou_online_hud/crossbow.png")
-	resource.AddFile("materials/tlou_online_hud/crowbar.png")
 	resource.AddFile("materials/tlou_online_hud/mpx5.png")
 	resource.AddFile("materials/tlou_online_hud/trap.png")
 	resource.AddFile("materials/tlou_online_hud/revolver.png")
 	resource.AddFile("materials/tlou_online_hud/shotgun.png")
-	resource.AddFile("materials/tlou_online_hud/small-health.png")
 	resource.AddFile("materials/tlou_online_hud/variable-rifle.png")
-	resource.AddFile("materials/tlou_online_hud/rpg.png")
 
 	-- Ammo types
 	resource.AddFile("materials/tlou_online_hud/ammo-arrow.png")
