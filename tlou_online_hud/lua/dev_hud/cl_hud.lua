@@ -24,10 +24,18 @@ function drawBlurAt(x, y, w, h, amount, passes, reverse)
     end
 end
 
-surface.CreateFont("ammo", {
-	font = "D-DIN",
-	size = 30 * (ScrW() / 1920)
-})
+function createFont()
+	surface.CreateFont("ammo", {
+		font = "D-DIN",
+		size = 30 * (ScrW() / 1920)
+	})
+end
+
+createFont()
+
+hook.Add( "OnScreenSizeChanged", "PrintOld", function( oldWidth, oldHeight )
+	createFont()
+end)
 
 local icons = {
 	[1] = {
@@ -213,6 +221,17 @@ hook.Add("HUDPaint", "dev_hud", function()
 		    magMaxAmmoCount = weapon:GetMaxClip1()
 		    magReserveCount = ply:GetAmmoCount(weapon:GetPrimaryAmmoType())
 
+		    local magAmmoCountCol = Color(255, 255, 255, 255)
+		    local magReserveCountCol = Color(180, 180, 180, 255)
+
+		    if magAmmoCount <= 0 then magAmmoCountCol = Color(128, 0, 0, 255) end
+		    if magReserveCount <= 0 then magReserveCountCol = Color(128, 0, 0, 255) end
+
+		    draw.SimpleText(magReserveCount, "ammo", startingPosInfoX + infoBarW, startingPosInfoY + infoBarH + 2, magReserveCountCol, TEXT_ALIGN_RIGHT, TEXT_ALIGN_TOP)
+			draw.SimpleText("|", "ammo", startingPosInfoX + infoBarW - surface.GetTextSize(magReserveCount), startingPosInfoY + infoBarH + 2, Color(180, 180, 180, 255), TEXT_ALIGN_RIGHT, TEXT_ALIGN_TOP)
+			draw.SimpleText(magAmmoCount, "ammo", startingPosInfoX + infoBarW - surface.GetTextSize(magReserveCount) - 8, startingPosInfoY + infoBarH + 2, magAmmoCountCol, TEXT_ALIGN_RIGHT, TEXT_ALIGN_TOP)
+
+			if weaponAmmoType > 10 then return end
 		    local weaponIconMat = icons[weaponAmmoType][1]
 		    local ammoIconMat = icons[weaponAmmoType][2]
 
@@ -232,15 +251,14 @@ hook.Add("HUDPaint", "dev_hud", function()
 			surface.SetDrawColor(255, 255, 255, 255)
 			surface.SetMaterial(ammoIconMat)
 			surface.DrawTexturedRect(startingPosAmmoIconX, startingPosAmmoIconY, ammoIconMatW, ammoIconMatH)
-
-			draw.SimpleText(magReserveCount, "ammo", startingPosInfoX + infoBarW, startingPosInfoY + infoBarH + 2, Color(180, 180, 180, 255), TEXT_ALIGN_RIGHT, TEXT_ALIGN_TOP)
-			draw.SimpleText("|", "ammo", startingPosInfoX + infoBarW - surface.GetTextSize(magReserveCount), startingPosInfoY + infoBarH + 2, Color(180, 180, 180, 255), TEXT_ALIGN_RIGHT, TEXT_ALIGN_TOP)
-			draw.SimpleText(magAmmoCount, "ammo", startingPosInfoX + infoBarW - surface.GetTextSize(magReserveCount) - 8, startingPosInfoY + infoBarH + 2, Color(255, 255, 255, 255), TEXT_ALIGN_RIGHT, TEXT_ALIGN_TOP)
 		else -- For such things like grenades
 			weaponAmmoType = weapon:GetPrimaryAmmoType()
 			if weaponAmmoType == -1 then return end
 			magReserveCount = ply:GetAmmoCount(weapon:GetPrimaryAmmoType())
 
+			draw.SimpleText(magReserveCount, "ammo", startingPosInfoX + infoBarW, startingPosInfoY + infoBarH + 4, Color(255, 255, 255, 255), TEXT_ALIGN_RIGHT, TEXT_ALIGN_TOP)
+
+			if weaponAmmoType > 10 then return end
 			local weaponIconMat = icons[weaponAmmoType][1]
 			local ammoIconMat = icons[weaponAmmoType][2]
 
@@ -260,7 +278,6 @@ hook.Add("HUDPaint", "dev_hud", function()
 			surface.SetDrawColor(255, 255, 255, 255)
 			surface.SetMaterial(ammoIconMat)
 			surface.DrawTexturedRect(startingPosAmmoIconX, startingPosAmmoIconY, ammoIconMatW, ammoIconMatH)
-			draw.SimpleText(magReserveCount, "ammo", startingPosInfoX + infoBarW, startingPosInfoY + infoBarH + 4, Color(255, 255, 255, 255), TEXT_ALIGN_RIGHT, TEXT_ALIGN_TOP)
 		end
 	end
 end)
