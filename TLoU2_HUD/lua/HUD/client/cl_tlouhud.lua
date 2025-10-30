@@ -67,66 +67,28 @@ function draw.JRing(PositionX, PositionY, Radius, Thickness, StartAng, EndAng)
     render.SetStencilEnable(false)
 end
 
--- There is no need to non stop recreate the circle so it's defined here and if needed, changed
-HUDBGCircle = draw.JCircle(1742 * ScrW() / 1920, 896 * ScrW() / 1920, 66 * ScrW() / 1920)
-
 // Initializing variables outside of HUDPaint
-local ammoPosX = 1669
-local ammoPosY = 920
 local plyStartHP, plyOldHP, plyNewHP = 0, -1, -1
 local lerpingPlayerHP, lerpingPlayerDamage, lerpingPlayerHeal = 200, 200, 200 -- because 200 is the max and starting angle the ring goes to
 local currWepAmmoType = 11 -- 11 means unarmed
 
 local gunInfo = {
-    {
-        Icon = Material("TLoU2_HUD/AR.png"), 
-        Size = 124
-    },
-    {
-        Icon = "skip",
-    },
-    {
-        Icon = Material("TLoU2_HUD/Pistol.png"),
-        Size = 52
-    },
-    {
-        Icon = Material("TLoU2_HUD/SMG.png"),
-        Size = 109
-    },
-    {
-        Icon = Material("TLoU2_HUD/Revolver.png"),
-        Size = 64
-    },
-    {
-        Icon = Material("TLoU2_HUD/Crossbow.png"),
-        Size = 0
-    },
-    {
-        Icon = Material("TLoU2_HUD/Shotgun.png"),
-        Size = 206
-    },
-    {
-        Icon = Material("TLoU2_HUD/RPG.png"),
-        Size = 212
-    },
-    {
-        Icon = Material("skip"),
-    },
-    {
-        Icon = Material("TLoU2_HUD/Grenade.png"),
-        Size = 22
-    },
-    {
-        Icon = Material("TLoU2_HUD/Unarmed.png"),
-        Size = 29
-    }
+    [1] = Material("TLoU2_HUD/AR.png"),
+    [3] = Material("TLoU2_HUD/Pistol.png"),
+    [4] = Material("TLoU2_HUD/SMG.png"),
+    [5] = Material("TLoU2_HUD/Revolver.png"),
+    [6] = Material("TLoU2_HUD/Crossbow.png"),
+    [7] = Material("TLoU2_HUD/Shotgun.png"),
+    [8] = Material("TLoU2_HUD/RPG.png"),
+    [10] = Material("TLoU2_HUD/Grenade.png"),
+    [11] = Material("TLoU2_HUD/Unarmed.png")
 }
 
 hook.Add("HUDPaint", "TLoUHUD", function()
     -- Used for scaling the HUD (It was made on 1920x1080 so that's why it's divided by 1920)
     local scale = ScrW() / 1920
 
-    ply = LocalPlayer()
+    local ply = LocalPlayer()
 
     -- Variables
     local plyHP = ply:Health()
@@ -140,7 +102,7 @@ hook.Add("HUDPaint", "TLoUHUD", function()
     else
         currWepAmmoType = currWep:GetPrimaryAmmoType()
     end
-    
+
     -- Player initial spawn
     if plyOldHP == -1 and plyNewHP == -1 then
         plyOldHP = plyHP
@@ -174,6 +136,33 @@ hook.Add("HUDPaint", "TLoUHUD", function()
         return lerpingPlayerHP
     end
 
+    // Size, and positions
+    -- Background box
+    local bgBoxW, bgBoxH = 146 * scale, 70 * scale
+    local bgBoxX, bgBoxY = ScrW() / 2 + (582 * scale), ScrH() / 2 + (324 * scale)
+
+    -- Health ring
+    local ringX, ringY = ScrW() / 2 + (782 * scale), ScrH() / 2 + (356 * scale)
+    local ringRad = 66 * scale
+    local ringThick = 7 * scale
+
+    -- Armour ring
+    local armourRingRad = 66 * scale
+    local armourRingThick = 7 * scale
+
+    -- Ammo
+    local ammoX, ammoY = ScrW() / 2 + (770 * scale), ScrH() / 2 + (380 * scale)
+    local bulletX, bulletY = bgBoxX + bgBoxW - (17 * scale), bgBoxY + bgBoxH + 2
+
+    -- Grey lines
+    local topLineX, topLineY = bgBoxX, bgBoxY
+    local bottomLineX, bottomLineY = bgBoxX, bgBoxY + bgBoxH
+
+    -- Weapon icon
+    local gunIcon = gunInfo[currWepAmmoType]
+    local iconW, iconH = gunIcon:GetInt("$realwidth") * scale, gunIcon:GetInt("$realheight") * scale
+    local iconX, iconY = bgBoxX + 5, bgBoxY + (bgBoxH / 2) - (iconH / 2)
+
     -- HUD Background
     render.SetStencilWriteMask( 0xFF )
     render.SetStencilTestMask( 0xFF )
@@ -189,19 +178,19 @@ hook.Add("HUDPaint", "TLoUHUD", function()
         render.SetStencilReferenceValue(1)
         render.SetStencilCompareFunction(STENCIL_ALWAYS)
         render.SetStencilPassOperation(STENCIL_REPLACE)
-        surface.DrawRect(1542 * scale, 864 * scale, 144 * scale, 54 * scale)
+        surface.DrawRect(bgBoxX, bgBoxY, bgBoxW, bgBoxH)
         render.SetStencilCompareFunction(STENCIL_GREATER)
-        surface.DrawPoly(HUDBGCircle)
+        surface.DrawPoly(draw.JCircle(ringX, ringY, ringRad))
     render.SetStencilEnable(false)
 
     -- Empty ring
     surface.SetDrawColor(150, 150, 150, 200)
-    draw.JRing(1742 * scale, 896 * scale, 66 * scale, 7 * scale, 2, 200)
+    draw.JRing(ringX, ringY, ringRad, ringThick, 2, 200)
 
     -- Grey lines
     surface.SetDrawColor(150, 150, 150, 100)
-    surface.DrawRect(1542 * scale, 864 * scale, 222 * scale, 1)
-    surface.DrawRect(1542 * scale, 918 * scale, 132 * scale, 1)
+    surface.DrawRect(topLineX, topLineY, 222 * scale, 1)
+    surface.DrawRect(bottomLineX, bottomLineY, bgBoxW, 1)
 
     -- Handles gun icon, bullet count, ammo count
     if currWep:IsValid() then
@@ -211,62 +200,67 @@ hook.Add("HUDPaint", "TLoUHUD", function()
             local magReserveCount = ply:GetAmmoCount(currWep:GetPrimaryAmmoType())
 
             -- Draws the magazine and reserve count
-            draw.SimpleText(magAmmoCount, "primaryAmmo", 1730 * scale, 918 * scale, Color( 255, 255, 255, 255 ), TEXT_ALIGN_RIGHT, TEXT_ALIGN_CENTER)
-            draw.SimpleText("|", "text", 1734 * scale, 920 * scale, Color( 255, 255, 255, 255 ), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
-            draw.SimpleText(magReserveCount, "reserveAmmo", 1738 * scale, 919 * scale, Color( 240, 240, 240, 255 ), TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
+            draw.SimpleText(magAmmoCount, "primaryAmmo", ammoX, ammoY - 2, Color( 255, 255, 255, 255 ), TEXT_ALIGN_RIGHT, TEXT_ALIGN_CENTER)
+            draw.SimpleText("|", "text", ammoX + 4, ammoY, Color( 255, 255, 255, 255 ), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
+            draw.SimpleText(magReserveCount, "reserveAmmo", ammoX + 8, ammoY - 1, Color( 200, 200, 200, 255 ), TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
 
             -- Draws the capacity of the magazine (limited to 32)
+            local drawBulletLimit = 31 * scale
             surface.SetDrawColor(140, 140, 140, 255)
-            for j = 0, math.min(31, magMaxAmmoCount - 1) do
-                local step = (ammoPosX * scale) + j * -4
-                surface.DrawRect(step, ammoPosY * scale, 2, 8)
+            for j = 0, math.min(drawBulletLimit, magMaxAmmoCount - 1) do
+                local step = (bulletX) + j * -4
+                surface.DrawRect(step, bulletY, 2, 8)
             end
 
             -- Draws the magazine bullet count
             surface.SetDrawColor(255, 255, 255, 255)
-            for i = 0, math.min(31, magAmmoCount - 1) do
-                local step = (ammoPosX * scale) + i * -4
-                surface.DrawRect(step, ammoPosY * scale, 2, 8)
+            for i = 0, math.min(drawBulletLimit, magAmmoCount - 1) do
+                local step = (bulletX) + i * -4
+                surface.DrawRect(step, bulletY, 2, 8)
             end
         else
             -- Draws the ammo for weapons that don't have a reserve (example: Grenade, RPG)
             local grenadeCount = ply:GetAmmoCount(currWep:GetPrimaryAmmoType())
-            draw.SimpleText(grenadeCount, "primaryAmmo", 1734 * scale, 920 * scale, Color( 255, 255, 255, 255 ), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
+            draw.SimpleText(grenadeCount, "primaryAmmo", ammoX + 4, ammoY, Color( 255, 255, 255, 255 ), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
         end
     end
+
     -- Health Loss
     if lerpingPlayerDamage ~= plyHPAng then
         lerpingPlayerDamage = Lerp((CurTime() - plyStartHP - .5) / .2, lerpingPlayerDamage, plyHPAng) // (- .5) is the delay || / .2 is the animation time
         surface.SetDrawColor(138, 28, 26, 255)
-        draw.JRing(1742 * scale, 896 * scale, 66 * scale, 7 * scale, math.max(2, lerpingPlayerHP), math.Clamp(lerpingPlayerDamage, 2, 200))
+        draw.JRing(ringX, ringY, ringRad, ringThick, math.max(2, lerpingPlayerHP), math.Clamp(lerpingPlayerDamage, 2, 200))
     end
+
     -- Health gain
     if plyHP > plyOldHP then
         surface.SetDrawColor(38, 65, 102, 255)
-        draw.JRing(1742 * scale, 896 * scale, 66 * scale, 7 * scale, lerpingPlayerHP, plyHPAng)
+        draw.JRing(ringX, ringY, ringRad, ringThick, lerpingPlayerHP, plyHPAng)
         surface.SetDrawColor(86, 145, 227, 255)
-        draw.JRing(1742 * scale, 896 * scale, 66 * scale, 7 * scale, lerpingPlayerHP, lerpingPlayerHeal)
+        draw.JRing(ringX, ringY, ringRad, ringThick, lerpingPlayerHP, lerpingPlayerHeal)
     end
+
     -- Health bar
     for h = 0, 200, 40 do
         surface.SetDrawColor(255, 255, 255, 255)
-        draw.JRing(1742 * scale, 896 * scale, 66 * scale, 7 * scale, h + 2, math.Clamp(HpAng(h, 40), 2, 200))
+        draw.JRing(ringX, ringY, ringRad, ringThick, h + 2, math.Clamp(HpAng(h, 40), 2, 200))
     end
+
     -- Armor bar
     if plyArmor > 0 then
         surface.SetDrawColor(150, 150, 150, 200)
-        draw.JRing(1742 * scale, 896 * scale, 75 * scale, 2 * scale, 2, 200)
+        draw.JRing(ringX, ringY, 75 * scale, 3 * scale, 2, 200)
         surface.SetDrawColor(121, 180, 242, 255)
-        draw.JRing(1742 * scale, 896 * scale, 75 * scale, 4 * scale, 0, math.Clamp(202 * (plyArmor / plyMaxArmor), 0, 202))
+        draw.JRing(ringX, ringY, 75 * scale, 4 * scale, 0, math.Clamp(202 * (plyArmor / plyMaxArmor), 0, 202))
     end
+
     -- Gun display
     surface.SetDrawColor(255, 255, 255, 255)
-    surface.SetMaterial(gunInfo[currWepAmmoType].Icon)
-    surface.DrawTexturedRect(1548 * scale, 870 * scale, gunInfo[currWepAmmoType].Size * scale, 40 * scale)
-end, HOOK_HIGH)
+    surface.SetMaterial(gunIcon)
+    surface.DrawTexturedRect(iconX, iconY, iconW, iconH)
+end)
 
 hook.Add("OnScreenSizeChanged", "TLoUHUDScreenSizeChanged", function()
-    HUDBGCircle = draw.JCircle(1742 * ScrW() / 1920, 896 * ScrW() / 1920, 66 * ScrW() / 1920)
     createFonts()
 end)
 
@@ -283,23 +277,3 @@ hook.Add("HUDShouldDraw", "HideTheDefaultHUD", function(name)
         return false
     end
 end)
-
--- Understanding stencils
-//render.OverrideColorWriteEnable(true, false)
-//render.OverrideColorWriteEnable(false)
--- Nice colour: 86, 145, 227
-    /*
-    surface.SetDrawColor(0, 0, 0, 100)
-    render.SetStencilEnable(true)
-        render.SetStencilReferenceValue(1)
-        render.SetStencilCompareFunction(STENCIL_ALWAYS)
-        render.SetStencilPassOperation(STENCIL_REPLACE)
-        surface.DrawRect(1285 * scale, 720 * scale, 120 * scale, 45 * scale)
-        render.SetStencilReferenceValue(0)
-        render.SetStencilCompareFunction(STENCIL_EQUAL)
-        render.SetStencilPassOperation(STENCIL_REPLACE)
-        render.SetStencilFailOperation(STENCIL_REPLACE)
-        render.SetStencilZFailOperation(STENCIL_KEEP)
-        surface.DrawPoly(HUDBGCircle)
-    render.SetStencilEnable(false)
-    */
